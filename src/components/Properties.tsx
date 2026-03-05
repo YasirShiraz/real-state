@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bed, Bath, Square, MapPin, SlidersHorizontal, ArrowRight, PhoneCall } from 'lucide-react';
+import { MapPin, SlidersHorizontal, ArrowRight, PhoneCall } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import { useLanguage } from '../context/LanguageContext';
 
