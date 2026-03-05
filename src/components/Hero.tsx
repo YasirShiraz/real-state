@@ -1,138 +1,208 @@
-import React, { useRef, useState } from 'react';
-import { Volume2, VolumeX, PlayCircle } from 'lucide-react';
-import { motion } from 'framer-motion';
+import React, { useRef, useState, useEffect } from 'react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 
-const Hero: React.FC = () => {
-    const [isMuted, setIsMuted] = useState(true);
+import { useData } from '../context/DataContext';
+import { useLanguage } from '../context/LanguageContext';
+
+interface HeroProps {
+    onExplore?: () => void;
+}
+
+const Hero: React.FC<HeroProps> = ({ onExplore }) => {
+    const { heroSlides } = useData();
+    const { t } = useLanguage();
+    const [currentSlide, setCurrentSlide] = useState(0);
+    const [isMuted] = useState(true);
     const videoRef = useRef<HTMLVideoElement>(null);
-    const audioRef = useRef<HTMLAudioElement>(null);
 
-    const toggleMute = () => {
-        if (videoRef.current && audioRef.current) {
-            const newState = !isMuted;
-            setIsMuted(newState);
-            videoRef.current.muted = newState;
-            audioRef.current.muted = newState;
-            if (!newState) {
-                audioRef.current.play().catch(() => { });
-            }
+    const { scrollY } = useScroll();
+    const yVideo = useTransform(scrollY, [0, 1000], [0, 400]); // Parallax for video
+    const yContent = useTransform(scrollY, [0, 1000], [0, 150]); // Slower parallax for text
+
+    // Auto-advance slides
+    useEffect(() => {
+        if (heroSlides.length <= 1) return;
+        const interval = setInterval(() => {
+            setCurrentSlide(prev => (prev + 1) % heroSlides.length);
+        }, 8000);
+        return () => clearInterval(interval);
+    }, [heroSlides.length]);
+
+    const activeSlide = heroSlides.length > 0
+        ? heroSlides[currentSlide]
+        : { type: 'image', url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=1400' };
+
+    const handleScrollHintClick = () => {
+        if (typeof window !== 'undefined') {
+            window.scrollTo({
+                top: window.innerHeight,
+                behavior: 'smooth',
+            });
         }
     };
 
     return (
-        <section className="relative h-screen w-full flex items-center overflow-hidden bg-[var(--background)]" data-theme="dark">
-            {/* Background Video */}
-            <div className="hero-video-container optimized-animate">
-                <video
-                    ref={videoRef}
-                    autoPlay
-                    loop
-                    muted={isMuted}
-                    playsInline
-                    poster="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&q=80&w=1920"
-                    className="w-full h-full object-cover scale-105"
-                >
-                    <source src="https://assets.mixkit.co/videos/preview/mixkit-dubai-city-aerial-view-during-the-day-27082-large.mp4" type="video/mp4" />
-                </video>
-            </div>
+        <section
+            className="relative h-screen w-full flex items-start md:items-center overflow-hidden bg-[var(--background)] pt-28 md:pt-36 lg:pt-40"
+            data-theme="dark"
+        >
+            {/* Background Media with Parallax */}
+            <motion.div style={{ y: yVideo }} className="hero-video-container optimized-animate absolute inset-0 w-full h-full">
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={activeSlide.url}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 1.5 }}
+                        className="absolute inset-0 w-full h-full"
+                    >
+                        {activeSlide.type === 'video' ? (
+                            <video
+                                ref={videoRef}
+                                autoPlay
+                                loop
+                                muted={isMuted}
+                                playsInline
+                                key={activeSlide.url} // Force reload on change
+                                className="w-full h-full object-cover scale-105"
+                            >
+                                <source src={activeSlide.url} type="video/mp4" />
+                            </video>
+                        ) : (
+                            <img
+                                src={activeSlide.url}
+                                className="w-full h-full object-cover scale-105"
+                                alt="Hero Background"
+                            />
+                        )}
+                    </motion.div>
+                </AnimatePresence>
+            </motion.div>
 
             {/* Premium Video Overlay */}
             <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-[var(--background)] pointer-events-none" />
             <div className="absolute inset-0 bg-black/10 pointer-events-none" />
 
             {/* Intelligence Scanning Line */}
+            {/* Light scanning line (animation kept subtle for performance) */}
             <motion.div
-                animate={{ y: ['0%', '100%'], opacity: [0, 0.4, 0] }}
-                transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                animate={{ y: ['0%', '100%'], opacity: [0, 0.35, 0] }}
+                transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
                 className="absolute top-0 left-0 w-full h-[1px] bg-[var(--gold)]/30 z-[5] blur-[1.5px]"
             />
 
-            <audio
-                ref={audioRef}
-                loop
-                muted={isMuted}
-                src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3"
-            />
-
             <div className="section-container relative z-10 w-full">
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
-                    className="max-w-7xl optimized-animate"
-                    style={{ gap: 'var(--content-gap)', display: 'flex', flexDirection: 'column' }}
-                >
-                    <div className="inline-flex items-center gap-5 mb-12 px-8 py-3 rounded-full glass-dark border border-white/10 shadow-2xl">
-                        <div className="w-2.5 h-2.5 rounded-full bg-[var(--gold)] animate-pulse shadow-[0_0_12px_var(--gold)]" />
-                        <span className="text-[var(--gold-light)] tracking-[0.5em] uppercase text-[10px] font-black">
-                            Market Intelligence 4.0 Active
-                        </span>
-                    </div>
+                <motion.div style={{ y: yContent }}>
+                    <motion.div
+                        style={{ gap: 'var(--content-gap)', display: 'flex', flexDirection: 'column' }}
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
+                        className="max-w-7xl optimized-animate flex flex-col items-center text-center mx-auto"
+                    >
 
-                    <h1 className="text-[12vw] xl:text-[10rem] font-bold leading-[0.8] mb-14 tracking-[-0.06em] text-white drop-shadow-[0_25px_60px_rgba(0,0,0,0.8)]">
-                        PLATINUM <br />
-                        <span className="gold-gradient italic font-black">LIVING.</span>
-                    </h1>
+                        <h1 className="text-[clamp(2.5rem,10vw,8rem)] leading-[1.1] mt-10 md:mt-16 mb-8 md:mb-14 tracking-[-0.06em] font-bold text-white drop-shadow-[0_25px_60px_rgba(0,0,0,0.8)]">
+                            {t('platinumLiving').split(' ').length > 1 ? (
+                                <>
+                                    {t('platinumLiving').split(' ').slice(0, -1).join(' ')} <br />
+                                    <span className="gold-gradient italic font-black">
+                                        {t('platinumLiving').split(' ').slice(-1)}
+                                    </span>
+                                </>
+                            ) : (
+                                <span className="gold-gradient italic font-black">{t('platinumLiving')}</span>
+                            )}
+                        </h1>
 
-                    <p className="text-2xl md:text-3xl text-white/90 font-light max-w-3xl mb-20 leading-relaxed drop-shadow-2xl">
-                        Experience the new standard of transparency in luxury real estate.
-                        <br />Powered by high-velocity data for <span className="text-[var(--gold-light)] font-bold">Downtown</span> and <span className="text-[var(--gold-light)] font-bold">JVC</span>.
-                    </p>
+                        <p className="text-lg md:text-3xl text-white/90 font-light max-w-3xl mb-8 md:mb-10 leading-relaxed drop-shadow-2xl mx-auto">
+                            Experience the new standard of transparency in luxury real estate.
+                            <br className="hidden md:block" />Powered by high-velocity data for <span className="text-[var(--gold-light)] font-bold">Downtown</span> and <span className="text-[var(--gold-light)] font-bold">JVC</span>.
+                        </p>
 
-                    <div className="flex items-center gap-12">
-                        <button className="gold-bg text-black hover:scale-105 active:scale-95 transition-all duration-700 font-bold tracking-[0.4em] px-16 py-7 rounded-full flex items-center gap-6 shadow-2xl group">
-                            <span className="text-sm">EXPLORE ESTATE</span>
-                            <PlayCircle size={28} className="group-hover:translate-x-2 transition-transform duration-500" />
-                        </button>
 
-                        <button
-                            onClick={toggleMute}
-                            className="flex items-center gap-6 group py-5 pr-12 pl-6 rounded-full glass-dark border border-white/10 hover:bg-white/10 transition-all duration-700 shadow-xl"
-                        >
-                            <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-[var(--gold)] group-hover:text-black transition-all duration-500 shadow-inner">
-                                {isMuted ? <VolumeX size={24} className="text-white group-hover:text-black" /> : <Volume2 size={24} className="text-white group-hover:text-black animate-pulse" />}
-                            </div>
-                            <div className="flex flex-col text-left">
-                                <span className="text-[10px] uppercase tracking-[0.4em] font-black text-white/40 mb-1">Sound Experience</span>
-                                <span className="text-sm font-bold text-white tracking-[0.2em] uppercase">{isMuted ? 'Muted' : 'Playing'}</span>
-                            </div>
-                        </button>
-                    </div>
+                        {/* Mobile Stats Snapshot */}
+                        <div className="mt-8 grid grid-cols-3 gap-4 lg:hidden text-white/80 text-xs w-full max-w-xl mx-auto">
+                            {[
+                                { label: t('transVolume'), value: '$12.4B+' },
+                                { label: t('activeListings'), value: '450+' },
+                                { label: t('growth'), value: '12%' },
+                            ].map((stat) => (
+                                <div
+                                    key={stat.label}
+                                    className="rounded-2xl bg-black/40 border border-white/10 py-3 px-3 flex flex-col items-center gap-1 backdrop-blur-md"
+                                >
+                                    <span className="text-[9px] uppercase tracking-[0.3em] text-white/40 text-center">
+                                        {stat.label}
+                                    </span>
+                                    <span className="text-base font-semibold text-white tracking-tight text-center">
+                                        {stat.value}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    </motion.div>
                 </motion.div>
             </div>
 
             {/* Hero Stats - Floating Data Cards */}
-            <div className="absolute bottom-24 right-container z-10 hidden lg:flex flex-col gap-6">
+            <div className="absolute bottom-20 right-container z-10 hidden lg:flex flex-col gap-8">
                 {[
-                    { label: 'TRANSACTION VOLUME', value: '$12.4B+' },
-                    { label: 'ACTIVE LISTINGS', value: '450+' },
-                    { label: 'PROJECTED GROWTH', value: '12%' },
+                    { label: t('transVolume'), value: '$12.4B+' },
+                    { label: t('activeListings'), value: '450+' },
+                    { label: t('growth'), value: '12%' },
                 ].map((stat, i) => (
                     <motion.div
-                        initial={{ x: 100, opacity: 0 }}
-                        animate={{ x: 0, opacity: 1 }}
-                        transition={{ delay: 1.5 + (i * 0.2), duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+                        initial={{ x: 80, opacity: 0 }}
+                        animate={{
+                            x: 0,
+                            opacity: 1,
+                            y: [0, -10, 0], // Softer anti-gravity float to reduce overlap
+                        }}
+                        transition={{
+                            x: { delay: 1.3 + (i * 0.15), duration: 1.1, ease: [0.16, 1, 0.3, 1] },
+                            opacity: { delay: 1.3 + (i * 0.15), duration: 1.1 },
+                            y: { duration: 7, repeat: Infinity, ease: "easeInOut", delay: i * 1.5 } // Staggered float
+                        }}
                         key={i}
-                        className="glass-dark border border-white/5 pl-10 pr-6 py-6 rounded-[2rem] min-w-[320px] flex justify-between items-center group cursor-default hover:bg-white/[0.08] transition-all duration-700 hover:-translate-x-6 hover:shadow-[0_40px_80px_rgba(0,0,0,0.5)] border-l-[1px] border-l-[var(--gold)]/30"
+                        className="relative group cursor-default"
                     >
-                        <div className="flex flex-col gap-1">
-                            <span className="text-[9px] text-[var(--gold-light)] uppercase tracking-[0.6em] font-black opacity-60 group-hover:opacity-100 transition-opacity">
-                                {stat.label}
-                            </span>
-                            <span className="text-4xl font-bold text-white tracking-tighter transition-transform group-hover:scale-105 origin-left duration-700">
-                                {stat.value}
-                            </span>
-                        </div>
+                        {/* The Floating Stat - Background Removed */}
+                        <div className="flex items-center justify-center gap-6 transition-all duration-500 group-hover:-translate-x-3 drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)]">
 
-                        <div className="relative w-12 h-12 flex items-center justify-center">
-                            <div className="absolute inset-0 rounded-full border border-[var(--gold)]/10 group-hover:border-[var(--gold)]/40 transition-colors duration-700" />
-                            <div className="w-2 h-2 rounded-full bg-[var(--gold)] shadow-[0_0_20px_var(--gold)] animate-pulse" />
-                            {/* Orbiting ring */}
-                            <motion.div
-                                animate={{ rotate: 360 }}
-                                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-                                className="absolute inset-0 rounded-full border-t border-[var(--gold)]/40 border-r border-transparent border-b border-transparent border-l border-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"
-                            />
+                            <div className="flex flex-col items-end justify-center text-right">
+                                <span className="text-[var(--gold-light)] text-[9px] font-black tracking-[0.35em] uppercase mb-3 drop-shadow-md">
+                                    {stat.label}
+                                </span>
+                                <span className="text-3xl md:text-4xl font-bold text-white tracking-tight leading-tight drop-shadow-lg mb-2">
+                                    {stat.value}
+                                </span>
+                            </div>
+
+                            {/* Right Indicator - Performance Refined with Halo */}
+                            <div className="relative w-16 h-16 flex items-center justify-center">
+                                {/* Triple Rings for Depth */}
+                                <div className="absolute inset-0 rounded-full border border-white/5 opacity-40" />
+                                <div className="absolute inset-2 rounded-full border border-white/10 group-hover:border-[var(--gold)]/20 transition-all duration-700" />
+                                <div className="absolute inset-4 rounded-full border border-white/5 opacity-30" />
+
+                                <div className="relative">
+                                    <div className="w-3 h-3 rounded-full bg-[var(--gold)] relative z-10" />
+                                    {/* Signature Halo Glow */}
+                                    <div className="absolute inset-0 rounded-full bg-[var(--gold)] blur-[8px] opacity-70 group-hover:opacity-100 group-hover:blur-[12px] transition-all duration-700" />
+                                    <motion.div
+                                        animate={{ scale: [1, 1.6, 1], opacity: [0.2, 0.5, 0.2] }}
+                                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                                        className="absolute inset-[-6px] rounded-full bg-[var(--gold)]/20 blur-sm"
+                                    />
+                                </div>
+
+                                <motion.div
+                                    animate={{ rotate: 360 }}
+                                    transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                                    className="absolute inset-0 rounded-full border-t border-[var(--gold)]/30 border-r border-transparent border-b border-transparent border-l border-transparent"
+                                />
+                            </div>
                         </div>
                     </motion.div>
                 ))}
@@ -142,7 +212,10 @@ const Hero: React.FC = () => {
             <motion.div
                 animate={{ y: [0, 20, 0] }}
                 transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute bottom-12 left-container flex items-center gap-6 text-white/30 group cursor-pointer"
+                onClick={handleScrollHintClick}
+                role="button"
+                tabIndex={0}
+                className="absolute bottom-24 left-container flex items-center gap-6 text-white/40 group cursor-pointer"
             >
                 <div className="w-[1px] h-16 bg-white/10 relative overflow-hidden">
                     <motion.div
@@ -152,12 +225,22 @@ const Hero: React.FC = () => {
                     />
                 </div>
 
-
-                <span className="text-[11px] uppercase tracking-[0.6em] font-black group-hover:text-white transition-all duration-500">Scroll to Explore</span>
+                <span className="text-[11px] uppercase tracking-[0.6em] font-black group-hover:text-white transition-all duration-500">
+                    {t('scrollExplore')}
+                </span>
             </motion.div>
 
-            {/* Visual Bottom Cut */}
-            <div className="absolute bottom-0 left-0 w-full h-48 bg-gradient-to-t from-[var(--background)] via-[var(--background)]/40 to-transparent pointer-events-none" />
+            {/* Visual Bottom Cut – clickable to explore */}
+            <button
+                type="button"
+                onClick={onExplore}
+                className="absolute bottom-0 left-0 w-full h-16 md:h-20 bg-black rounded-t-[999px] shadow-[0_-12px_40px_rgba(0,0,0,0.75)] flex items-center justify-center cursor-pointer border-t border-white/10 z-0"
+                aria-label={t('exploreEstate')}
+            >
+                <span className="text-[9px] md:text-[10px] uppercase tracking-[0.5em] text-white/40 font-black">
+                    {t('theCollection')}
+                </span>
+            </button>
         </section>
     );
 };

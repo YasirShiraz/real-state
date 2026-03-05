@@ -1,172 +1,177 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Search, Menu, User, Globe } from 'lucide-react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { Menu, X, Globe, User } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import Logo from './Logo';
+import { useLanguage } from '../context/LanguageContext';
 
-const Navbar: React.FC = () => {
+interface NavbarProps {
+  onNavigate?: (page: string) => void;
+  currentView?: string;
+}
+
+const links = [
+  { id: 'home', key: 'home' },
+  { id: 'properties', key: 'properties' },
+  { id: 'communities', key: 'communities' },
+  { id: 'about', key: 'aboutUs' },
+  { id: 'contact', key: 'contact' },
+];
+
+const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
+  const { t, language } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
-  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
-  const navRef = useRef<HTMLElement>(null);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 20 !== isScrolled) {
-        setIsScrolled(window.scrollY > 20);
-      }
-    };
+    const onScroll = () => setIsScrolled(window.scrollY > 10);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
-    const observerOptions = {
-      root: null,
-      rootMargin: '-5% 0px -90% 0px',
-      threshold: [0, 0.1]
-    };
-
-    const handleIntersect = (entries: IntersectionObserverEntry[]) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const newTheme = entry.target.getAttribute('data-theme') as 'light' | 'dark';
-          if (newTheme && newTheme !== theme) setTheme(newTheme);
-        }
-      });
-    };
-
-    const observer = new IntersectionObserver(handleIntersect, observerOptions);
-    const sections = document.querySelectorAll('section[data-theme], footer[data-theme]');
-    sections.forEach((section) => observer.observe(section));
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      observer.disconnect();
-    };
-  }, [isScrolled, theme]);
-
-  const isDark = theme === 'dark';
+  const handleNav = (id: string) => {
+    if (!onNavigate) return;
+    setOpen(false);
+    onNavigate(id);
+    window.scrollTo(0, 0);
+  };
 
   return (
-    <motion.nav
-      ref={navRef}
-      initial={false}
-      animate={{
-        backgroundColor: isScrolled
-          ? (isDark ? 'rgba(10, 10, 10, 0.6)' : 'rgba(252, 252, 252, 0.6)')
-          : 'rgba(0, 0, 0, 0)',
-        paddingTop: isScrolled ? '1.25rem' : '2.5rem',
-        paddingBottom: isScrolled ? '1.25rem' : '2.5rem',
-      }}
-      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      className={`fixed top-0 left-0 w-full z-[150] transition-all duration-700 ${isScrolled ? 'backdrop-blur-2xl border-b border-black/[0.03]' : ''}`}
-    >
-      <div className="section-container relative flex items-center justify-between">
-        {/* LOGO area with Anti-Gravity float */}
-        <motion.div
-          layout
-          className="flex items-center gap-16 optimized-animate"
-        >
-          <motion.div
-            initial={false}
-            animate={{
-              y: isScrolled ? 0 : -2,
-              filter: isDark ? 'brightness(1.1) drop-shadow(0 0 10px rgba(212, 175, 55, 0.2))' : 'brightness(0.9)'
-            }}
-            className="text-2xl font-black tracking-tighter gold-gradient cursor-pointer"
-          >
-            MA ESTATE
-          </motion.div>
-
-          {/* NAV LINKS with Staggered Transition */}
-          <div className="hidden lg:flex items-center gap-10 text-[10px] font-bold tracking-[0.3em] uppercase">
-            {['Secondary', 'Off-plan', 'Rentals', 'Sell'].map((item, i) => (
-              <motion.a
-                key={item}
-                href="#"
-                animate={{
-                  color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(10,10,10,0.8)',
-                  y: isScrolled ? 0 : [0, -3, 0]
-                }}
-                transition={{
-                  y: { repeat: Infinity, duration: 3.5, delay: i * 0.4, ease: "easeInOut" },
-                  color: { duration: 0.6 }
-                }}
-                className="hover:text-[var(--gold)] transition-colors duration-300 relative group"
-              >
-                {item}
-                <motion.span
-                  className="absolute -bottom-1 left-0 w-0 h-[1.5px] bg-[var(--gold)]"
-                  whileHover={{ width: '100%' }}
-                  transition={{ duration: 0.3 }}
-                />
-              </motion.a>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* ICONS AREA */}
-        <div className="flex items-center gap-5">
-          {/* Search */}
-          <motion.button
-            whileHover={{ y: -4, scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            animate={{
-              backgroundColor: isDark ? 'rgba(255, 255, 255, 0.03)' : 'rgba(10, 10, 10, 0.03)',
-              borderColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(10, 10, 10, 0.08)',
-              color: isDark ? '#ffffff' : '#0a0a0a'
-            }}
-            className="w-11 h-11 flex items-center justify-center rounded-full border transition-all duration-500 optimized-animate"
-          >
-            <Search size={18} strokeWidth={1.2} />
-          </motion.button>
-
-          {/* Language */}
-          <motion.button
-            whileHover={{ y: -4, scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            animate={{
-              backgroundColor: isDark ? 'rgba(255, 255, 255, 0.03)' : 'rgba(10, 10, 10, 0.03)',
-              borderColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(10, 10, 10, 0.08)',
-              color: isDark ? '#ffffff' : '#0a0a0a'
-            }}
-            className="hidden sm:flex items-center gap-2 h-11 px-6 rounded-full border transition-all duration-500 text-[10px] font-black tracking-widest uppercase optimized-animate"
-          >
-            <Globe size={14} strokeWidth={1.2} />
-            <span>EN</span>
-          </motion.button>
-
-          {/* Menu */}
-          <motion.button
-            whileHover={{ y: -4, scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            animate={{
-              backgroundColor: isDark ? 'rgba(255, 255, 255, 0.03)' : 'rgba(10, 10, 10, 0.03)',
-              borderColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(10, 10, 10, 0.08)',
-              color: isDark ? '#ffffff' : '#0a0a0a'
-            }}
-            className="w-11 h-11 flex items-center justify-center rounded-full border transition-all duration-500 group optimized-animate"
-          >
-            <Menu size={20} strokeWidth={1.2} className="group-hover:rotate-180 transition-transform duration-700" />
-          </motion.button>
-
-          {/* User */}
-          <motion.button
-            whileHover={{ y: -4, scale: 1.05, rotate: 8 }}
-            whileTap={{ scale: 0.95 }}
-            className="w-12 h-12 flex items-center justify-center rounded-full gold-bg shadow-2xl shadow-[var(--gold-muted)] group optimized-animate"
-          >
-            <User size={18} className="text-white" strokeWidth={2.5} />
-          </motion.button>
-        </div>
-
-        {/* Dynamic Bottom Line */}
-        <motion.div
-          initial={false}
+    <>
+      <motion.header
+        initial={{ y: -40, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className="fixed top-0 left-0 w-full z-[150] pointer-events-none"
+      >
+        <motion.nav
+          className="section-container mt-4"
           animate={{
-            width: isScrolled ? '100%' : '0%',
-            opacity: isScrolled ? 0.05 : 0,
-            background: isDark ? 'white' : 'black'
+            paddingTop: isScrolled ? 10 : 18,
+            paddingBottom: isScrolled ? 10 : 18,
           }}
-          className="absolute bottom-0 left-0 h-[1px]"
-        />
-      </div>
-    </motion.nav>
+        >
+          <div className="pointer-events-auto flex items-center justify-between rounded-full bg-black/40 backdrop-blur-2xl border border-white/10 px-4 sm:px-6 lg:px-8 shadow-[0_18px_45px_rgba(0,0,0,0.55)]">
+            {/* Left: Logo */}
+            <button
+              onClick={() => handleNav('home')}
+              className="flex items-center gap-2 py-2"
+            >
+              <Logo isDark={true} />
+            </button>
+
+            {/* Center: desktop links */}
+            <div className="hidden md:flex items-center gap-8 text-[11px] font-bold uppercase tracking-[0.32em]">
+              {links.map((link) => {
+                const isActive =
+                  (link.id === 'home' && currentView === 'home') ||
+                  (link.id === 'about' && currentView === 'about') ||
+                  currentView === link.id;
+
+                return (
+                  <button
+                    key={link.id}
+                    onClick={() => handleNav(link.id)}
+                    className="relative py-3"
+                  >
+                    <span
+                      className={`transition-colors ${
+                        isActive ? 'text-[var(--gold)]' : 'text-white/80 hover:text-white'
+                      }`}
+                    >
+                      {t(link.key as any)}
+                    </span>
+                    <span
+                      className={`absolute left-0 right-0 -bottom-1 mx-auto h-[2px] rounded-full bg-[var(--gold)] transition-transform origin-center ${
+                        isActive ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
+                      }`}
+                    />
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Right: actions */}
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="hidden sm:flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-[10px] uppercase tracking-[0.3em] text-white/70">
+                <Globe size={14} />
+                <span>{language}</span>
+              </div>
+
+              <button
+                onClick={() => handleNav('login')}
+                className="hidden sm:inline-flex items-center justify-center w-9 h-9 rounded-full gold-bg text-white shadow-lg"
+              >
+                <User size={16} />
+              </button>
+
+              {/* Mobile menu button */}
+              <button
+                onClick={() => setOpen((v) => !v)}
+                className="inline-flex md:hidden items-center justify-center w-9 h-9 rounded-full border border-white/20 text-white"
+              >
+                {open ? <X size={18} /> : <Menu size={18} />}
+              </button>
+            </div>
+          </div>
+        </motion.nav>
+      </motion.header>
+
+      {/* Mobile sheet */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[140] bg-black/70 backdrop-blur-md md:hidden"
+          >
+            <motion.div
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              className="absolute bottom-0 left-0 right-0 rounded-t-3xl bg-[#050505] border-t border-white/10 px-6 pt-6 pb-10 space-y-6"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-[10px] font-bold tracking-[0.4em] text-white/40 uppercase">
+                  Menu
+                </span>
+                <button
+                  onClick={() => setOpen(false)}
+                  className="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center text-white/80"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+
+              <div className="flex flex-col gap-4">
+                {links.map((link, index) => (
+                  <motion.button
+                    key={link.id}
+                    onClick={() => handleNav(link.id)}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.05 * index }}
+                    className="flex items-center justify-between py-3 border-b border-white/5 text-left"
+                  >
+                    <span className="text-white text-sm font-semibold tracking-[0.12em] uppercase">
+                      {t(link.key as any)}
+                    </span>
+                  </motion.button>
+                ))}
+              </div>
+
+              <button
+                onClick={() => handleNav('login')}
+                className="mt-4 w-full rounded-full gold-bg text-black font-bold text-xs uppercase tracking-[0.25em] py-3"
+              >
+                Client Portal
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 

@@ -1,6 +1,6 @@
-import React from 'react';
 import { X, TrendingUp, DollarSign, MapIcon, BarChart3 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLanguage } from '../context/LanguageContext';
 import { Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 
 interface SmartOverlayProps {
@@ -20,26 +20,32 @@ const data = [
 ];
 
 const SmartOverlay: React.FC<SmartOverlayProps> = ({ isOpen, onClose, type }) => {
+    const { t, isRTL } = useLanguage();
     return (
         <AnimatePresence>
             {isOpen && (
                 <motion.div
-                    initial={{ x: '100%' }}
+                    initial={{ x: isRTL ? '-100%' : '100%' }}
                     animate={{ x: 0 }}
-                    exit={{ x: '100%' }}
+                    exit={{ x: isRTL ? '-100%' : '100%' }}
                     transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                    className="fixed top-0 right-0 w-full md:w-[600px] h-full z-[60] glass border-l border-white/10 p-12 overflow-y-auto"
+                    className={`fixed top-0 ${isRTL ? 'left-0 border-r' : 'right-0 border-l'} w-full md:w-[600px] h-full z-[60] glass border-white/10 p-12 overflow-y-auto`}
                 >
+                    <img
+                        src="https://images.unsplash.com/photo-1549517045-bc93de075e53?auto=format&fit=crop&q=80&w=800"
+                        className="absolute inset-0 w-full h-full object-cover opacity-[0.05] pointer-events-none"
+                        alt="Sidebar Background"
+                    />
                     <button
                         onClick={onClose}
-                        className="absolute top-8 right-8 p-3 glass rounded-full hover:bg-white/10 transition-colors"
+                        className={`absolute top-8 ${isRTL ? 'left-8' : 'right-8'} p-3 glass rounded-full hover:bg-white/10 transition-colors`}
                     >
                         <X size={20} />
                     </button>
 
                     <header className="mb-12">
-                        <span className="text-[var(--gold)] text-xs font-bold tracking-[0.3em] uppercase mb-2 block">Intelligence Matrix</span>
-                        <h2 className="text-4xl font-bold uppercase">{type === 'trends' ? 'Market Trends' : 'Live Valuation'}</h2>
+                        <span className="text-[var(--gold)] text-xs font-bold tracking-[0.3em] uppercase mb-2 block">{t('marketTrends')}</span>
+                        <h2 className="text-4xl font-bold uppercase">{type === 'trends' ? t('marketTrends') : t('liveValuation')}</h2>
                     </header>
 
                     <div className="grid grid-cols-2 gap-6 mb-12">
@@ -58,7 +64,7 @@ const SmartOverlay: React.FC<SmartOverlayProps> = ({ isOpen, onClose, type }) =>
                     <div className="mb-12">
                         <h3 className="text-sm font-bold uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
                             <BarChart3 size={16} className="text-[var(--gold)]" />
-                            ROI Alpha Index (5Y)
+                            Market Value Index (5Y)
                         </h3>
                         <div className="h-[250px] w-full">
                             <ResponsiveContainer width="100%" height="100%">
@@ -85,24 +91,24 @@ const SmartOverlay: React.FC<SmartOverlayProps> = ({ isOpen, onClose, type }) =>
                             Top Neighborhoods
                         </h3>
                         {[
-                            { name: 'JVC', roi: '8.9%', status: 'High Yield' },
-                            { name: 'International City', roi: '9.2%', status: 'Value' },
-                            { name: 'Dubai Land Residence', roi: '8.1%', status: 'Growth' },
-                            { name: 'Liwan', roi: '7.5%', status: 'Emerging' },
-                            { name: 'Downtown Dubai', roi: '6.4%', status: 'Premium' },
+                            { name: 'JVC', roi: '', status: 'High Yield' },
+                            { name: 'International City', roi: '', status: 'Value' },
+                            { name: 'Dubai Land Residence', roi: '', status: 'Growth' },
+                            { name: 'Liwan', roi: '', status: 'Emerging' },
+                            { name: 'Downtown Dubai', roi: '', status: 'Premium' },
                         ].map((item, i) => (
                             <div key={i} className="flex items-center justify-between p-4 rounded-xl hover:bg-white/5 transition-colors border border-transparent hover:border-white/10">
                                 <div>
                                     <div className="font-semibold">{item.name}</div>
                                     <div className="text-[10px] text-white/40 uppercase tracking-widest">{item.status}</div>
                                 </div>
-                                <div className="text-[var(--gold)] font-bold">{item.roi} ROI</div>
+                                <div className="text-[var(--gold)] font-bold">{item.roi}</div>
                             </div>
                         ))}
                     </div>
 
                     <button className="w-full mt-12 py-4 bg-[var(--gold)] text-black font-bold uppercase tracking-[0.2em] text-xs rounded-lg hover:scale-[1.02] transition-transform">
-                        Get Full Report
+                        {t('getFullReport')}
                     </button>
                 </motion.div>
             )}

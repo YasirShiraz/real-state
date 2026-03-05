@@ -1,8 +1,6 @@
 @import "tailwindcss";
 
-
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Noto+Sans+Arabic:wght@300;400;600;700&display=swap');
 
 :root {
   --background: #ffffff;
@@ -12,16 +10,19 @@
   --gold-dark: #b8860b;
   --gold-muted: rgba(212, 175, 55, 0.15);
   --glass: rgba(255, 255, 255, 0.85);
-  --glass-dark: rgba(10, 10, 10, 0.9);
+  --glass-dark: rgba(10, 10, 10, 0.7);
   --glass-border: rgba(0, 0, 0, 0.04);
   --glass-border-light: rgba(255, 255, 255, 0.1);
   --section-dark: #000000;
   --font-main: 'Outfit', sans-serif;
   --transition-premium: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-  --section-spacing: clamp(6rem, 20vh, 15rem);
-  --container-padding: clamp(2rem, 8vw, 12rem);
-  --content-gap: clamp(2rem, 5vh, 4rem);
-  --header-mb: clamp(4rem, 10vh, 8rem);
+  --section-spacing: clamp(6rem, 12vh, 10rem);
+  --container-padding: clamp(2rem, 8vw, 6rem);
+  --content-gap: clamp(2rem, 6vh, 4rem);
+  --header-mb: clamp(3rem, 8vh, 6rem);
+  --font-size-h1: clamp(2.5rem, 8vw, 6rem);
+  --font-size-h2: clamp(2rem, 5vw, 4rem);
+  --font-size-body: clamp(1rem, 1.5vw, 1.125rem);
 }
 
 * {
@@ -128,6 +129,14 @@ h4 {
   padding-bottom: var(--section-spacing);
 }
 
+.pt-section {
+  padding-top: var(--section-spacing);
+}
+
+.pb-section {
+  padding-bottom: var(--section-spacing);
+}
+
 .px-container {
   padding-left: var(--container-padding);
   padding-right: var(--container-padding);
@@ -143,6 +152,31 @@ h4 {
 
 .optimized-animate {
   will-change: transform, opacity;
+}
+
+/* RTL OVERRIDES */
+[dir="rtl"] .left-container {
+  right: var(--container-padding);
+  left: auto;
+}
+
+[dir="rtl"] .right-container {
+  left: var(--container-padding);
+  right: auto;
+}
+
+.font-arabic {
+  font-family: 'Noto Sans Arabic', sans-serif !important;
+}
+
+[dir="rtl"] .gold-gradient {
+  background: linear-gradient(-135deg,
+      var(--gold-dark) 0%,
+      var(--gold-light) 50%,
+      var(--gold) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 /* Custom Scrollbar */
@@ -173,4 +207,46 @@ h4 {
 
 .img-luxury:hover {
   transform: scale(1.02);
+}
+
+/* ANTI-GRAVITY ANIMATIONS */
+@keyframes anti-gravity {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+    box-shadow: 0 5px 15px 0px rgba(0, 0, 0, 0.1);
+  }
+
+  50% {
+    transform: translateY(-20px);
+    box-shadow: 0 25px 15px -5px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.anti-gravity-card {
+  animation: anti-gravity 6s ease-in-out infinite;
+  will-change: transform, box-shadow;
+}
+
+/* Stagger delays manually or via JS for multiple cards */
+.anti-gravity-card:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.anti-gravity-card:nth-child(2) {
+  animation-delay: 2s;
+}
+
+.anti-gravity-card:nth-child(3) {
+  animation-delay: 4s;
+}
+
+.anti-gravity-hover {
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.anti-gravity-hover:hover {
+  transform: translateY(-10px) !important;
+  box-shadow: 0 30px 60px -10px rgba(212, 175, 55, 0.25) !important;
 }

@@ -1,22 +1,24 @@
 import React from 'react';
 import { Home, Key, HandCoins, Building2, TrendingUp, Compass, Calculator } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useLanguage } from '../context/LanguageContext';
 
 interface FloatingMenuProps {
     onOpenOverlay: (type: string) => void;
 }
 
-const menuItems = [
-    { icon: Home, label: 'Buy', type: 'buy' },
-    { icon: Key, label: 'Rent', type: 'rent' },
-    { icon: HandCoins, label: 'Sell', type: 'sell' },
-    { icon: Building2, label: 'New Projects', type: 'new' },
-    { icon: TrendingUp, label: 'Trends', type: 'trends' },
-    { icon: Compass, label: 'Explore', type: 'explore' },
-    { icon: Calculator, label: 'Valuation', type: 'valuation' },
-];
-
 const FloatingMenu: React.FC<FloatingMenuProps> = ({ onOpenOverlay }) => {
+    const { t } = useLanguage();
+
+    const menuItems = [
+        { icon: Home, label: t('buy'), type: 'buy' },
+        { icon: Key, label: t('rent'), type: 'rent' },
+        { icon: HandCoins, label: t('sell'), type: 'sell' },
+        { icon: Building2, label: t('newProjects'), type: 'new' },
+        { icon: TrendingUp, label: t('trends'), type: 'trends' },
+        { icon: Compass, label: t('explore'), type: 'explore' },
+        { icon: Calculator, label: t('valuation'), type: 'valuation' },
+    ];
     return (
         <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] px-4 w-full max-w-5xl">
             <motion.div
