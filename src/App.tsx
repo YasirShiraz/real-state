@@ -1,6 +1,6 @@
-import React, { useState, Suspense, lazy } from 'react';
+import React, { useState, Suspense, lazy, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Search, User, Globe } from 'lucide-react';
+
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Logo from './components/Logo';
@@ -22,6 +22,15 @@ const Login = lazy(() => import('./components/Login'));
 import Admin from './components/Admin';
 import { useData } from './context/DataContext';
 
+const validViews = ['home', 'properties', 'full-collection', 'property-detail', 'communities', 'about', 'contact', 'service-sales', 'service-rentals', 'service-valuation', 'service-management', 'login', 'admin'];
+
+const getInitialView = () => {
+  const path = window.location.pathname.replace(/^\/+/, '');
+  if (!path) return 'home';
+  if (validViews.includes(path)) return path;
+  return 'home';
+};
+
 const App: React.FC = () => {
   const { t } = useLanguage();
   const { properties } = useData();
@@ -29,21 +38,41 @@ const App: React.FC = () => {
     isOpen: false,
     type: '',
   });
-  const [view, setView] = useState('home');
+  const [view, setView] = useState(getInitialView);
   const [selectedPropertyId, setSelectedPropertyId] = useState<number | null>(null);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const path = window.location.pathname.replace(/^\/+/, '');
+      if (validViews.includes(path)) {
+        setView(path);
+      } else {
+        setView('home');
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const handleSetView = (newView: string) => {
+    setView(newView);
+    window.scrollTo(0, 0);
+    const url = newView === 'home' ? '/' : `/${newView}`;
+    if (window.location.pathname !== url) {
+      window.history.pushState(null, '', url);
+    }
+  };
 
   const handleViewProperty = (id: number, fromView: string) => {
     setSelectedPropertyId(id);
-    setView('property-detail');
-    window.scrollTo(0, 0);
+    handleSetView('property-detail');
     // Store where we came from so back button works
     sessionStorage.setItem('propertyDetailFrom', fromView);
   };
 
   const handleBackFromDetail = () => {
     const from = sessionStorage.getItem('propertyDetailFrom') || 'properties';
-    setView(from);
-    window.scrollTo(0, 0);
+    handleSetView(from);
   };
 
 
@@ -59,7 +88,7 @@ const App: React.FC = () => {
       {view !== 'admin' && view !== 'login' && (
         <Navbar
           currentView={view}
-          onNavigate={(page) => setView(page)}
+          onNavigate={(page) => handleSetView(page)}
         />
       )}
 
@@ -258,7 +287,7 @@ const App: React.FC = () => {
                       whileInView={{ opacity: 1, scale: 1 }}
                       transition={{ duration: 1, delay: i * 0.1 }}
                       className="group relative h-[400px] sm:h-[500px] lg:h-[650px] overflow-hidden rounded-[2.5rem] sm:rounded-[3.5rem] border border-white/10 bg-black cursor-pointer shadow-2xl transition-all duration-700 hover:shadow-[0_45px_100px_rgba(0,0,0,0.9)]"
-                      onClick={() => { setView('full-collection'); window.scrollTo(0, 0); }}
+                      onClick={() => handleSetView('full-collection')}
                     >
                       {/* Premium Shine Effect on Hover */}
                       <div className="absolute inset-0 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none">
@@ -320,7 +349,7 @@ const App: React.FC = () => {
         }>
           {view === 'properties' && (
             <Properties
-              onOpenCollection={() => { setView('full-collection'); window.scrollTo(0, 0); }}
+              onOpenCollection={() => handleSetView('full-collection')}
               onViewProperty={(id) => handleViewProperty(id, 'properties')}
             />
           )}
@@ -342,8 +371,8 @@ const App: React.FC = () => {
           {view === 'admin' && <Admin />}
           {view === 'login' && (
             <Login
-              onBack={() => setView('home')}
-              onAdminLogin={() => setView('admin')}
+              onBack={() => handleSetView('home')}
+              onAdminLogin={() => handleSetView('admin')}
             />
           )}
         </Suspense>
