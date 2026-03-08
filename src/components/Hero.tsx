@@ -5,10 +5,9 @@ import { useData } from '../context/DataContext';
 import { useLanguage } from '../context/LanguageContext';
 
 interface HeroProps {
-    onExplore?: () => void;
 }
 
-const Hero: React.FC<HeroProps> = ({ onExplore }) => {
+const Hero: React.FC<HeroProps> = () => {
     const { heroSlides } = useData();
     const { t } = useLanguage();
     const [currentSlide, setCurrentSlide] = useState(0);
@@ -43,7 +42,7 @@ const Hero: React.FC<HeroProps> = ({ onExplore }) => {
 
     return (
         <section
-            className="relative h-screen w-full flex items-start md:items-center overflow-hidden bg-[var(--background)] pt-28 md:pt-36 lg:pt-40"
+            className="relative h-screen w-full flex items-center overflow-hidden bg-black pt-20 md:pt-36 lg:pt-40"
             data-theme="dark"
         >
             {/* Background Media with Parallax */}
@@ -81,8 +80,8 @@ const Hero: React.FC<HeroProps> = ({ onExplore }) => {
             </motion.div>
 
             {/* Premium Video Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-[var(--background)] pointer-events-none" />
-            <div className="absolute inset-0 bg-black/10 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-black/20 pointer-events-none" />
 
             {/* Intelligence Scanning Line */}
             {/* Light scanning line (animation kept subtle for performance) */}
@@ -102,7 +101,7 @@ const Hero: React.FC<HeroProps> = ({ onExplore }) => {
                         className="max-w-7xl optimized-animate flex flex-col items-center text-center mx-auto"
                     >
 
-                        <h1 className="text-[clamp(2.5rem,10vw,8rem)] leading-[1.1] mt-10 md:mt-16 mb-8 md:mb-14 tracking-[-0.06em] font-bold text-white drop-shadow-[0_25px_60px_rgba(0,0,0,0.8)]">
+                        <h1 className="text-[clamp(2rem,10vw,8rem)] leading-[1.1] mt-6 md:mt-16 mb-6 md:mb-14 tracking-[-0.06em] font-bold text-white drop-shadow-[0_25px_60px_rgba(0,0,0,0.8)]">
                             {t('platinumLiving').split(' ').length > 1 ? (
                                 <>
                                     {t('platinumLiving').split(' ').slice(0, -1).join(' ')} <br />
@@ -115,38 +114,61 @@ const Hero: React.FC<HeroProps> = ({ onExplore }) => {
                             )}
                         </h1>
 
-                        <p className="text-lg md:text-3xl text-white/90 font-light max-w-3xl mb-8 md:mb-10 leading-relaxed drop-shadow-2xl mx-auto">
+                        <p className="text-sm sm:text-base md:text-2xl text-white/80 font-light max-w-2xl mb-6 md:mb-10 leading-relaxed drop-shadow-xl mx-auto px-1 md:px-0">
                             Experience the new standard of transparency in luxury real estate.
-                            <br className="hidden md:block" />Powered by high-velocity data for <span className="text-[var(--gold-light)] font-bold">Downtown</span> and <span className="text-[var(--gold-light)] font-bold">JVC</span>.
+                            <br className="hidden md:block" />Powered by high-velocity data for <span className="text-[var(--gold-light)] font-semibold">Downtown</span> and <span className="text-[var(--gold-light)] font-semibold">JVC</span>.
                         </p>
 
 
-                        {/* Mobile Stats Snapshot */}
-                        <div className="mt-8 grid grid-cols-3 gap-4 lg:hidden text-white/80 text-xs w-full max-w-xl mx-auto">
-                            {[
-                                { label: t('transVolume'), value: '$12.4B+' },
-                                { label: t('activeListings'), value: '450+' },
-                                { label: t('growth'), value: '12%' },
-                            ].map((stat) => (
-                                <div
-                                    key={stat.label}
-                                    className="rounded-2xl bg-black/40 border border-white/10 py-3 px-3 flex flex-col items-center gap-1 backdrop-blur-md"
+                        {/* Mobile Stats + CTA */}
+                        <div className="lg:hidden w-full max-w-sm mx-auto space-y-4">
+                            <div className="grid grid-cols-3 gap-2.5">
+                                {[
+                                    { label: t('transVolume'), value: '$12.4B+' },
+                                    { label: t('activeListings'), value: '450+' },
+                                    { label: t('growth'), value: '12%' },
+                                ].map((stat) => (
+                                    <div
+                                        key={stat.label}
+                                        className="rounded-2xl bg-black/50 border border-white/10 py-3 px-2 flex flex-col items-center gap-1.5 backdrop-blur-xl"
+                                    >
+                                        <span className="text-[8px] uppercase tracking-[0.25em] text-white/40 text-center leading-tight">
+                                            {stat.label}
+                                        </span>
+                                        <span className="text-sm font-bold text-[var(--gold-light)] tracking-tight text-center">
+                                            {stat.value}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Mobile CTAs */}
+                            <div className="flex items-center gap-2.5 pt-1">
+                                <button
+                                    onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
+                                    className="flex-1 py-3 rounded-full gold-bg text-black text-[10px] font-black uppercase tracking-[0.25em] shadow-[0_8px_24px_rgba(212,175,55,0.45)]"
                                 >
-                                    <span className="text-[9px] uppercase tracking-[0.3em] text-white/40 text-center">
-                                        {stat.label}
-                                    </span>
-                                    <span className="text-base font-semibold text-white tracking-tight text-center">
-                                        {stat.value}
-                                    </span>
-                                </div>
-                            ))}
+                                    Explore
+                                </button>
+                                <a
+                                    href="https://wa.me/971585589001"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="flex-1 py-3.5 rounded-full bg-black border border-white/20 text-white text-[11px] font-black uppercase tracking-[0.2em] text-center flex items-center justify-center gap-2 hover:bg-[#25D366] hover:text-white hover:border-[#25D366] transition-all duration-300 shadow-2xl group/wa"
+                                >
+                                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-[#25D366] group-hover/wa:text-white transition-colors">
+                                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 .018 5.394 0 12.03c0 2.119.553 4.187 1.605 5.952L0 24l6.12-1.605a11.802 11.802 0 005.923 1.577h.004c6.635 0 12.032-5.395 12.036-12.033A11.83 11.83 0 0012.05h.004z" />
+                                    </svg>
+                                    <span>WhatsApp</span>
+                                </a>
+                            </div>
                         </div>
                     </motion.div>
                 </motion.div>
             </div>
 
             {/* Hero Stats - Floating Data Cards */}
-            <div className="absolute bottom-20 right-container z-10 hidden lg:flex flex-col gap-8">
+            <div className="absolute bottom-20 right-container z-10 hidden lg:flex flex-col gap-10 items-end">
                 {[
                     { label: t('transVolume'), value: '$12.4B+' },
                     { label: t('activeListings'), value: '450+' },
@@ -165,10 +187,10 @@ const Hero: React.FC<HeroProps> = ({ onExplore }) => {
                             y: { duration: 7, repeat: Infinity, ease: "easeInOut", delay: i * 1.5 } // Staggered float
                         }}
                         key={i}
-                        className="relative group cursor-default"
+                        className="relative group cursor-default w-fit"
                     >
                         {/* The Floating Stat - Background Removed */}
-                        <div className="flex items-center justify-center gap-6 transition-all duration-500 group-hover:-translate-x-3 drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)]">
+                        <div className="flex items-center justify-end gap-6 transition-all duration-500 group-hover:-translate-x-3 drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)]">
 
                             <div className="flex flex-col items-end justify-center text-right">
                                 <span className="text-[var(--gold-light)] text-[9px] font-black tracking-[0.35em] uppercase mb-3 drop-shadow-md">
@@ -215,7 +237,7 @@ const Hero: React.FC<HeroProps> = ({ onExplore }) => {
                 onClick={handleScrollHintClick}
                 role="button"
                 tabIndex={0}
-                className="absolute bottom-24 left-container flex items-center gap-6 text-white/40 group cursor-pointer"
+                className="absolute bottom-24 left-container hidden sm:flex items-center gap-6 text-white/40 group cursor-pointer"
             >
                 <div className="w-[1px] h-16 bg-white/10 relative overflow-hidden">
                     <motion.div
@@ -230,17 +252,7 @@ const Hero: React.FC<HeroProps> = ({ onExplore }) => {
                 </span>
             </motion.div>
 
-            {/* Visual Bottom Cut – clickable to explore */}
-            <button
-                type="button"
-                onClick={onExplore}
-                className="absolute bottom-0 left-0 w-full h-16 md:h-20 bg-black rounded-t-[999px] shadow-[0_-12px_40px_rgba(0,0,0,0.75)] flex items-center justify-center cursor-pointer border-t border-white/10 z-0"
-                aria-label={t('exploreEstate')}
-            >
-                <span className="text-[9px] md:text-[10px] uppercase tracking-[0.5em] text-white/40 font-black">
-                    {t('theCollection')}
-                </span>
-            </button>
+
         </section>
     );
 };

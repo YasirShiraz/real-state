@@ -4,7 +4,7 @@ import { Search, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 const Communities: React.FC = () => {
-    const { t, isRTL } = useLanguage();
+    const { t } = useLanguage();
     const [searchQuery, setSearchQuery] = useState('');
 
     const communities = [
@@ -106,111 +106,66 @@ const Communities: React.FC = () => {
                     className="absolute inset-0 w-full h-full object-cover opacity-[0.03] pointer-events-none"
                     alt="Section Texture"
                 />
-                <div className="flex flex-col md:flex-row justify-between items-end mb-16 border-b border-gray-200 pb-4">
-                    <div className="relative">
+                <div className="flex flex-col md:flex-row justify-between items-end mb-10 md:mb-16 border-b border-gray-200 pb-4">
+                    <div className="relative pl-6">
                         <span className="text-[#DAA520] text-xs font-bold tracking-[0.2em] uppercase mb-2 block">{t('ourCommunities')}</span>
-                        <h2 className="text-4xl md:text-6xl font-light text-black">
+                        <h2 className="text-3xl md:text-6xl font-light text-black">
                             {t('searchFeatured').split(' ').slice(0, 1).map(word => <span key={word} className="font-bold block">{word}</span>)}
                             {t('searchFeatured').split(' ').slice(1, -1).join(' ')} <br />
                             <span className="font-bold">{t('searchFeatured').split(' ').slice(-1)}</span>
                         </h2>
 
                         {/* Decorative Line */}
-                        <div className={`absolute ${isRTL ? '-right-6' : '-left-6'} top-0 h-full w-[2px] bg-[#DAA520]`} />
+                        <div className={`absolute left-0 top-0 h-full w-[2px] bg-[#DAA520]`} />
                     </div>
                 </div>
 
                 {/* Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-8 w-full">
-                    {/* Row 1 */}
-                    {filteredCommunities[0] && (
-                        <div key="0" className="md:col-span-4 relative group h-[350px] overflow-hidden rounded-[3rem] bg-white shadow-2xl cursor-pointer">
-                            <img src={filteredCommunities[0].image} className="w-full h-full object-cover transition-transform duration-[4s] group-hover:scale-110" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/10 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-700" />
-                            <div className="absolute inset-x-0 bottom-0 p-6 md:p-8 translate-y-6 group-hover:translate-y-0 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]">
-                                <div className="glass-dark backdrop-blur-3xl rounded-[2.5rem] p-8 border border-white/10 space-y-4 shadow-2xl">
-                                    <div className="flex flex-col items-center text-center gap-1">
-                                        <span className="text-[var(--gold)] text-[10px] font-black uppercase tracking-[0.4em] mb-1">Dubai Collection</span>
-                                        <div className="flex items-center justify-center w-full relative">
-                                            <h3 className="text-2xl md:text-3xl font-bold text-white uppercase tracking-tighter leading-none group-hover:text-[var(--gold-light)] transition-colors">
-                                                {filteredCommunities[0].title}
-                                            </h3>
-                                            <ArrowRight size={20} className="absolute right-0 text-white/20 group-hover:text-[var(--gold)] transition-all duration-500" />
-                                        </div>
-                                    </div>
-                                    <div className="pt-2 opacity-0 group-hover:opacity-100 transition-all duration-500 delay-100">
-                                        <button className="gold-bg text-black px-8 py-3.5 rounded-full text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-all shadow-[0_10px_20px_rgba(212,175,55,0.3)] w-full">
-                                            Explore Community
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                    {filteredCommunities[1] && (
-                        <div key="1" className="md:col-span-8 relative group h-[350px] overflow-hidden rounded-[3rem] bg-white shadow-2xl cursor-pointer">
-                            <img src={filteredCommunities[1].image} className="w-full h-full object-cover transition-transform duration-[4s] group-hover:scale-110" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/10 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-700" />
-                            <div className="absolute inset-x-0 bottom-0 p-6 md:p-8 translate-y-6 group-hover:translate-y-0 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]">
-                                <div className="glass-dark backdrop-blur-3xl rounded-[2.5rem] p-8 border border-white/10 space-y-4 shadow-2xl">
-                                    <div className="flex flex-col items-center text-center gap-1">
-                                        <span className="text-[var(--gold)] text-[10px] font-black uppercase tracking-[0.4em] mb-1">Elite District</span>
-                                        <div className="flex items-center justify-center w-full relative">
-                                            <h3 className="text-2xl md:text-3xl font-bold text-white uppercase tracking-tighter leading-none group-hover:text-[var(--gold-light)] transition-colors">
-                                                {filteredCommunities[1].title}
-                                            </h3>
-                                            <ArrowRight size={20} className="absolute right-0 text-white/20 group-hover:text-[var(--gold)] transition-all duration-500" />
-                                        </div>
-                                    </div>
-                                    <div className="pt-2 opacity-0 group-hover:opacity-100 transition-all duration-500 delay-100">
-                                        <button className="gold-bg text-black px-8 py-3.5 rounded-full text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-all shadow-[0_10px_20px_rgba(212,175,55,0.3)] w-full">
-                                            Explore Community
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    )}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 w-full">
+                    {filteredCommunities.map((community, index) => (
+                        <motion.div
+                            key={index}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.6, delay: index * 0.1 }}
+                            viewport={{ once: true }}
+                            className={`relative group overflow-hidden rounded-[2.5rem] bg-white shadow-xl cursor-pointer ${index === 2 ? 'sm:col-span-2 lg:col-span-1 h-[400px]' : 'h-[350px] md:h-[400px]'
+                                }`}
+                        >
+                            <img
+                                src={community.image}
+                                alt={community.title}
+                                className="w-full h-full object-cover transition-transform duration-[4s] group-hover:scale-110"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-700" />
 
-                    {/* Row 2 */}
-                    {filteredCommunities[2] && (
-                        <div key="2" className="md:col-span-12 relative group h-[450px] overflow-hidden rounded-[3rem] bg-white shadow-2xl cursor-pointer mt-4">
-                            <img src={filteredCommunities[2].image} className="w-full h-full object-cover transition-transform duration-[4s] group-hover:scale-110" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/10 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-700" />
-                            <div className="absolute inset-x-0 bottom-0 p-8 md:p-12 translate-y-6 group-hover:translate-y-0 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]">
-                                <div className="glass-dark backdrop-blur-3xl rounded-[2.5rem] p-10 border border-white/10 space-y-4 shadow-2xl">
+                            <div className="absolute inset-x-0 bottom-0 p-4 md:p-6 lg:p-8 translate-y-4 group-hover:translate-y-0 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]">
+                                <div className="glass-dark backdrop-blur-2xl rounded-[2rem] p-5 md:p-6 border border-white/10 space-y-3 shadow-2xl">
                                     <div className="flex flex-col items-center text-center gap-1">
-                                        <span className="text-[var(--gold)] text-[12px] font-black uppercase tracking-[0.4em] mb-2">Signature Legacy</span>
+                                        <span className="text-[var(--gold)] text-[8px] md:text-[9px] font-black uppercase tracking-[0.3em] mb-0.5">
+                                            {index % 2 === 0 ? 'Dubai Collection' : 'Elite District'}
+                                        </span>
                                         <div className="flex items-center justify-center w-full relative">
-                                            <h3 className="text-3xl md:text-5xl font-bold text-white uppercase tracking-tighter leading-none group-hover:text-[var(--gold-light)] transition-colors">
-                                                {filteredCommunities[2].title}
+                                            <h3 className="text-xl md:text-2xl font-bold text-white uppercase tracking-tighter leading-none group-hover:text-[var(--gold-light)] transition-colors">
+                                                {community.title}
                                             </h3>
-                                            <ArrowRight size={32} className="absolute right-0 text-white/20 group-hover:text-[var(--gold)] transition-all duration-500" />
+                                            <ArrowRight size={18} className="hidden sm:block absolute right-[-10px] opacity-0 group-hover:opacity-100 group-hover:right-0 text-[var(--gold)] transition-all duration-500" />
                                         </div>
+                                        <p className="text-white/60 text-[10px] md:text-xs font-light mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                                            {community.description}
+                                        </p>
                                     </div>
-                                    <div className="pt-4 opacity-0 group-hover:opacity-100 transition-all duration-500 delay-100">
-                                        <button className="gold-bg text-black px-12 py-4 rounded-full text-xs font-black uppercase tracking-widest hover:scale-105 transition-all shadow-[0_10px_20px_rgba(212,175,55,0.3)]">
-                                            Explore Signature Community
+                                    <div className="pt-1 opacity-0 group-hover:opacity-100 transition-all duration-500 delay-100">
+                                        <button className="gold-bg text-black px-6 py-2.5 rounded-full text-[9px] font-black uppercase tracking-widest hover:scale-105 transition-all shadow-[0_10px_20px_rgba(212,175,55,0.3)] w-full">
+                                            Explore
                                         </button>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    )}
+                        </motion.div>
+                    ))}
                 </div>
             </div>
-
-            {/* WhatsApp Button */}
-            <a
-                href="https://wa.me/971585589001"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="fixed bottom-8 left-8 z-50 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:bg-[#20b858] transition-transform hover:scale-110"
-            >
-                <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8">
-                    <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.693c.961.533 1.83.693 2.778.694h.013c3.178 0 5.769-2.587 5.77-5.768.001-1.541-.601-2.986-1.688-4.073-1.089-1.09-2.535-1.693-4.082-1.811zm8.58 6.096c-.428-.214-2.536-1.249-2.929-1.393-.393-.143-.679-.214-.964.214-.286.429-1.107 1.393-1.357 1.679-.25.286-.5.321-.928.107-2.618-1.305-4.341-2.316-6.063-5.286-.214-.37.021-.571.229-.778.193-.193.429-.5.643-.75.214-.25.286-.429.429-.714.143-.286.071-.536-.036-.75-.107-.214-.964-2.321-1.321-3.179-.357-.839-.714-.714-.964-.714h-.821c-.286 0-.75.107-1.143.536-.393.429-1.5 1.464-1.5 3.571s1.536 4.143 1.75 4.428c.214.286 3.036 4.643 7.375 6.518 4.339 1.875 4.339 1.25 5.125 1.161.786-.089 2.536-1.036 2.911-2.036.375-1 .375-1.857.268-2.036-.107-.179-.393-.268-.821-.482zM12 2C6.486 2 2 6.486 2 12c0 1.84.514 3.553 1.408 5.03L2.01 22l5.056-1.32C8.619 21.6 10.284 22 12 22c5.514 0 10-4.486 10-10S17.514 2 12 2z" />
-                </svg>
-            </a>
         </div>
     );
 };

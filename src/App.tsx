@@ -51,15 +51,12 @@ const App: React.FC = () => {
     setOverlayState({ ...overlayState, isOpen: false });
   };
 
-  const handleExploreHero = () => {
-    setView('properties');
-    window.scrollTo(0, 0);
-  };
+
 
   return (
     <div className="relative min-h-screen bg-white">
       {/* New modern navbar */}
-      {view !== 'admin' && (
+      {view !== 'admin' && view !== 'login' && (
         <Navbar
           currentView={view}
           onNavigate={(page) => setView(page)}
@@ -68,7 +65,7 @@ const App: React.FC = () => {
 
       {view === 'home' ? (
         <>
-          <Hero onExplore={handleExploreHero} />
+          <Hero />
 
 
           <SmartOverlay
@@ -83,7 +80,7 @@ const App: React.FC = () => {
             {/* Signature Section - Modern Architecture */}
             <section className="py-section bg-white" data-theme="light">
               <div className="section-container">
-                <div className="flex flex-col xl:flex-row gap-20 xl:gap-32 items-start xl:items-center">
+                <div className="flex flex-col xl:flex-row gap-10 xl:gap-32 items-center">
                   <div className="flex-1 flex flex-col items-center text-center" style={{ gap: 'var(--content-gap)' }}>
                     <div style={{ marginBottom: 'calc(var(--content-gap) * 1.5)' }}>
                       <motion.span
@@ -115,7 +112,7 @@ const App: React.FC = () => {
                       From the <span className="text-black font-semibold">Burj Khalifa's</span> shadow to the serenity of the <span className="text-black font-semibold">Palm</span>, we curate only the extraordinary.
                     </motion.p>
 
-                    <div className="grid grid-cols-2 gap-12 sm:gap-20 pt-20 border-t border-black/5 w-full max-w-2xl">
+                    <div className="grid grid-cols-2 gap-6 sm:gap-20 pt-10 md:pt-20 border-t border-black/5 w-full max-w-2xl">
                       <div className="flex flex-col gap-8 items-center">
                         <div className="text-5xl md:text-7xl font-bold text-black tracking-tight leading-tight">250+</div>
                         <div className="text-[10px] text-[var(--gold-dark)] uppercase tracking-[0.4em] font-black opacity-60 text-center">{t('globalAwards')}</div>
@@ -135,18 +132,32 @@ const App: React.FC = () => {
                     <motion.div
                       whileHover={{ scale: 0.99 }}
                       transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-                      className="relative overflow-hidden rounded-[4rem] md:rounded-[6rem] shadow-3xl bg-black aspect-[4/5] xl:aspect-square z-10"
+                      className="relative overflow-hidden rounded-[4rem] md:rounded-[6rem] shadow-3xl bg-black aspect-square xl:aspect-square z-10"
                     >
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-1000 z-10 p-12 md:p-16 flex flex-col justify-end">
-                        <span className="text-[var(--gold-light)] text-[10px] font-bold uppercase tracking-[0.5em] mb-4">{t('signatureSeries')}</span>
-                        <h3 className="text-4xl md:text-5xl text-white font-bold tracking-tight">VILLA ORIGES</h3>
-                      </div>
                       <img
                         src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=70&w=1200"
                         alt="Bespoke Luxury Architecture"
                         loading="lazy"
-                        className="w-full h-full object-cover transition-transform duration-[6s] ease-out group-hover:scale-110"
+                        className="w-full h-full object-cover transition-transform duration-[6s] ease-out group-hover:scale-110 opacity-90 group-hover:opacity-100"
                       />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-700" />
+
+                      {/* Floating Content Card */}
+                      <div className="absolute inset-x-0 bottom-4 md:bottom-8 p-4 translate-y-4 group-hover:translate-y-0 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]">
+                        <div className="p-6 md:p-10 space-y-4">
+                          <div className="flex flex-col items-center text-center gap-1">
+                            <span className="text-[var(--gold)] text-[10px] md:text-xs font-black uppercase tracking-[0.4em] mb-1">{t('signatureSeries')}</span>
+                            <h3 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white uppercase tracking-tighter leading-tight group-hover:text-[var(--gold-light)] transition-colors drop-shadow-2xl">
+                              VILLA ORIGES
+                            </h3>
+                          </div>
+
+                          <div className="pt-2 opacity-0 group-hover:opacity-100 transition-all duration-700 delay-100 scale-95 group-hover:scale-100">
+                            <div className="h-[1px] w-12 bg-[var(--gold)] mx-auto mb-4 md:mb-6" />
+                            <p className="text-white/60 text-[9px] md:text-xs font-medium tracking-widest uppercase text-center drop-shadow-lg">Elite Architecture Selection</p>
+                          </div>
+                        </div>
+                      </div>
                     </motion.div>
                   </div>
                 </div>
@@ -235,7 +246,7 @@ const App: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 xl:gap-20">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 xl:gap-20">
                   {[
                     { name: 'JVC', roi: '', lifestyle: 'Investment', img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80&w=800', tag: 'INVESTOR' },
                     { name: 'International City', roi: '', lifestyle: 'Community', img: 'https://images.unsplash.com/photo-1597659840241-37e2b9c2f55f?auto=format&fit=crop&q=80&w=800', tag: 'VALUE' },
@@ -246,7 +257,7 @@ const App: React.FC = () => {
                       initial={{ opacity: 0, scale: 0.95 }}
                       whileInView={{ opacity: 1, scale: 1 }}
                       transition={{ duration: 1, delay: i * 0.1 }}
-                      className="group relative h-[650px] overflow-hidden rounded-[3.5rem] border border-white/10 bg-black cursor-pointer shadow-2xl transition-all duration-700 hover:shadow-[0_45px_100px_rgba(0,0,0,0.9)]"
+                      className="group relative h-[400px] sm:h-[500px] lg:h-[650px] overflow-hidden rounded-[2.5rem] sm:rounded-[3.5rem] border border-white/10 bg-black cursor-pointer shadow-2xl transition-all duration-700 hover:shadow-[0_45px_100px_rgba(0,0,0,0.9)]"
                       onClick={() => { setView('full-collection'); window.scrollTo(0, 0); }}
                     >
                       {/* Premium Shine Effect on Hover */}
@@ -339,98 +350,63 @@ const App: React.FC = () => {
       )}
 
       {/* Footer Overhaul - Editorial Style */}
-      <footer className="relative py-section bg-white border-t border-black/[0.04] overflow-hidden" data-theme="light">
-        <img
-          src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&q=80&w=2000"
-          className="absolute inset-0 w-full h-full object-cover opacity-[0.03] pointer-events-none"
-          alt="Footer Background"
-        />
-        <div className="section-container relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-20 xl:gap-40 items-start">
+      {view !== 'admin' && view !== 'login' && (
+        <footer className="relative py-28 bg-[#0a0a0a] border-t border-white/5 overflow-hidden" data-theme="dark">
+          <img
+            src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&q=80&w=2000"
+            className="absolute inset-0 w-full h-full object-cover opacity-[0.15] pointer-events-none"
+            alt="Footer Background"
+          />
+          <div className="section-container relative z-10">
+            <div className="flex flex-col lg:flex-row justify-between gap-16 lg:items-center">
+              {/* Brand Column */}
+              <div className="max-w-xl space-y-10">
+                <div className="space-y-6">
+                  <Logo isDark={true} className="scale-110 origin-left" />
+                  <p className="text-white/70 text-base font-medium leading-relaxed">
+                    Architecting the future of Dubai's vertical horizon. Where elite service meets unconditional luxury.
+                  </p>
+                </div>
 
-            {/* Brand Column */}
-            <div className="lg:col-span-5" style={{ gap: 'var(--content-gap)', display: 'flex', flexDirection: 'column' }}>
-              <div style={{ gap: 'var(--content-gap)', display: 'flex', flexDirection: 'column' }}>
-                <Logo isDark={false} className="scale-125 origin-left mb-4" />
-                <p className="text-black/50 text-2xl font-light leading-relaxed max-w-md">
-                  Architecting the future of Dubai's vertical horizon. Where elite service meets unconditional luxury.
-                </p>
-              </div>
-
-              <div className="space-y-6">
-                <span className="text-[11px] font-black tracking-[0.5em] uppercase opacity-30 block">{t('globalPresence')}</span>
-                <div className="flex flex-wrap gap-x-12 gap-y-4 text-sm font-bold tracking-wider">
-                  <span>DUBAI</span>
-                  <span>LONDON</span>
-                  <span>SINGAPORE</span>
-                  <span>NEW YORK</span>
+                <div className="space-y-4">
+                  <span className="text-[10px] font-black tracking-[0.6em] uppercase opacity-40 block text-white/50">{t('globalPresence')}</span>
+                  <div className="flex flex-wrap gap-x-12 gap-y-4 text-xs font-bold tracking-[0.2em] text-white/90">
+                    <span>DUBAI</span>
+                    <span>LONDON</span>
+                    <span>SINGAPORE</span>
+                    <span>NEW YORK</span>
+                  </div>
                 </div>
               </div>
 
-              <div className="flex gap-10">
-                {[
-                  { icon: <Search size={20} />, label: t('search') },
-                  { icon: <User size={20} />, label: 'Portal' },
-                  { icon: <Globe size={20} />, label: t('globalPresence').split(' ')[0] }
-                ].map((item, i) => (
-                  <motion.div
-                    key={i}
-                    whileHover={{ y: -5 }}
-                    className="w-14 h-14 rounded-full border border-black/5 flex items-center justify-center cursor-pointer hover:border-[var(--gold)] transition-colors"
-                  >
-                    {item.icon}
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-
-            {/* Links Columns */}
-            <div className="lg:col-span-7 grid grid-cols-2 md:grid-cols-3 gap-16 xl:gap-32 w-full">
-              <div className="space-y-10">
-                <h4 className="text-[11px] font-black uppercase tracking-[0.5em] text-black">{t('curations')}</h4>
-                <nav className="flex flex-col gap-6 text-sm font-medium text-black/40">
-                  {[t('skyPalaces'), t('privateIslands'), t('goldenYields'), t('offPlanElite')].map(link => (
-                    <a key={link} href="#" className="hover:text-black hover:translate-x-2 transition-all duration-500">{link}</a>
-                  ))}
-                </nav>
-              </div>
-
-              <div className="space-y-10">
-                <h4 className="text-[11px] font-black uppercase tracking-[0.5em] text-black">Services</h4>
-                <nav className="flex flex-col gap-6 text-sm font-medium text-black/40">
-                  <a href="#" className="hover:text-black hover:translate-x-2 transition-all duration-500" onClick={(e) => { e.preventDefault(); setView('service-sales'); window.scrollTo(0, 0); }}>Sales</a>
-                  <a href="#" className="hover:text-black hover:translate-x-2 transition-all duration-500" onClick={(e) => { e.preventDefault(); setView('service-rentals'); window.scrollTo(0, 0); }}>Rentals</a>
-                  <a href="#" className="hover:text-black hover:translate-x-2 transition-all duration-500" onClick={(e) => { e.preventDefault(); setView('service-valuation'); window.scrollTo(0, 0); }}>Valuation</a>
-                  <a href="#" className="hover:text-black hover:translate-x-2 transition-all duration-500" onClick={(e) => { e.preventDefault(); setView('service-management'); window.scrollTo(0, 0); }}>Management</a>
-                </nav>
-              </div>
-
-              <div className="space-y-10 col-span-2 md:col-span-1">
-                <h4 className="text-[11px] font-black uppercase tracking-[0.5em] text-black">Connect</h4>
-                <div className="space-y-8">
-                  <p className="text-sm font-medium text-black/40 leading-relaxed">
+              {/* Simple Contact Column */}
+              <div className="space-y-8 lg:text-right">
+                <div className="space-y-2">
+                  <span className="text-[10px] font-black uppercase tracking-[0.5em] text-white/30 block">Connect</span>
+                  <p className="text-sm font-medium text-white/50 leading-relaxed">
                     Level 84, Burj Khalifa District, <br />
                     Dubai, United Arab Emirates
                   </p>
-                  <a href="mailto:elite@maestate.com" className="text-lg font-bold hover:text-[var(--gold)] transition-colors underline underline-offset-8 decoration-black/5 block">elite@maestate.com</a>
                 </div>
+                <a href="mailto:elite@maestate.com" className="text-xl md:text-2xl font-bold text-[var(--gold)] hover:text-white transition-colors underline underline-offset-8 decoration-white/10 block">
+                  elite@maestate.com
+                </a>
+              </div>
+            </div>
+
+            {/* Subfooter */}
+            <div className="mt-16 md:mt-40 pt-10 md:pt-16 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 text-center">
+              <div className="text-[11px] font-bold text-white/20 uppercase tracking-[0.5em]">
+                © 2026 MA ESTATE GLOBAL LUXURY LLC. ALL RIGHTS RESERVED.
+              </div>
+              <div className="flex flex-wrap justify-center gap-6 sm:gap-16 text-[11px] font-bold text-white/40 uppercase tracking-[0.5em]">
+                <a href="#" className="hover:text-white transition-colors">{t('privacyLexicon')}</a>
+                <a href="#" className="hover:text-white transition-colors">{t('strategicTerms')}</a>
               </div>
             </div>
           </div>
-
-          {/* Subfooter */}
-          <div className="mt-40 pt-16 border-t border-black/[0.04] flex flex-col md:flex-row justify-between items-center gap-10">
-            <div className="text-[11px] font-bold text-black/20 uppercase tracking-[0.5em]">
-              © 2026 MA ESTATE GLOBAL LUXURY LLC. ALL RIGHTS RESERVED.
-            </div>
-            <div className="flex gap-16 text-[11px] font-bold text-black/40 uppercase tracking-[0.5em]">
-              <button onClick={() => { setView('admin'); window.scrollTo(0, 0); }} className="hover:text-black transition-colors uppercase tracking-[0.5em]">Admin Login</button>
-              <a href="#" className="hover:text-black transition-colors">{t('privacyLexicon')}</a>
-              <a href="#" className="hover:text-black transition-colors">{t('strategicTerms')}</a>
-            </div>
-          </div>
-        </div>
-      </footer>
+        </footer>
+      )}
     </div>
   );
 };

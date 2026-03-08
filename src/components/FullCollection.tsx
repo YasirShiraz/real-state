@@ -99,7 +99,7 @@ const FullCollection: React.FC<FullCollectionProps> = ({ onViewProperty }) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="bg-white/80 backdrop-blur-2xl p-4 rounded-[40px] shadow-2xl border border-black/5 flex flex-col lg:flex-row items-center gap-6"
+          className="bg-white/80 backdrop-blur-2xl p-4 rounded-[2rem] md:rounded-[40px] shadow-2xl border border-black/5 flex flex-col lg:flex-row items-center gap-4 lg:gap-6"
         >
           {/* Search */}
           <div className="w-full lg:w-96 relative group">
@@ -116,25 +116,25 @@ const FullCollection: React.FC<FullCollectionProps> = ({ onViewProperty }) => {
           </div>
 
           {/* Type & Status Filters Combined */}
-          <div className="flex-1 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-10">
-            <div className="flex flex-wrap gap-2 items-center justify-center">
+          <div className="flex-1 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-10 w-full overflow-hidden">
+            <div className="flex flex-col gap-2 items-center justify-center w-full sm:w-auto">
               <span className="text-[9px] font-black uppercase tracking-[0.4em] text-black/30">Type</span>
-              <div className="flex flex-wrap gap-2 justify-center">
+              <div className="flex overflow-x-auto no-scrollbar gap-2 justify-start sm:justify-center w-full px-2">
                 {types.map(t => (
                   <button key={t} onClick={() => setTypeFilter(t)}
-                    className={`px-4 py-2 rounded-full text-[9px] font-black uppercase tracking-widest transition-all duration-300 ${typeFilter === t ? 'bg-black text-white' : 'bg-black/5 text-black/50 hover:bg-black/10'}`}>
+                    className={`px-4 py-2 rounded-full text-[9px] font-black uppercase tracking-widest transition-all duration-300 flex-shrink-0 ${typeFilter === t ? 'bg-black text-white shadow-lg' : 'bg-black/5 text-black/50 hover:bg-black/10'}`}>
                     {t}
                   </button>
                 ))}
               </div>
             </div>
             <div className="w-[1px] bg-black/8 self-stretch hidden sm:block" />
-            <div className="flex flex-wrap gap-2 items-center justify-center">
+            <div className="flex flex-col gap-2 items-center justify-center w-full sm:w-auto">
               <span className="text-[9px] font-black uppercase tracking-[0.4em] text-black/30">Status</span>
-              <div className="flex flex-wrap gap-2 justify-center">
+              <div className="flex overflow-x-auto no-scrollbar gap-2 justify-start sm:justify-center w-full px-2">
                 {statuses.map(s => (
                   <button key={s} onClick={() => setStatusFilter(s)}
-                    className={`px-4 py-2 rounded-full text-[9px] font-black uppercase tracking-widest transition-all duration-300 ${statusFilter === s ? 'gold-bg text-black shadow-[0_4px_12px_rgba(212,175,55,0.3)]' : 'bg-black/5 text-black/50 hover:bg-black/10'}`}>
+                    className={`px-4 py-2 rounded-full text-[9px] font-black uppercase tracking-widest transition-all duration-300 flex-shrink-0 ${statusFilter === s ? 'gold-bg text-black shadow-[0_4px_12px_rgba(212,175,55,0.3)]' : 'bg-black/5 text-black/50 hover:bg-black/10'}`}>
                     {s}
                   </button>
                 ))}
@@ -188,7 +188,7 @@ const FullCollection: React.FC<FullCollectionProps> = ({ onViewProperty }) => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.4, delay: index * 0.04 }}
-                  className="group cursor-pointer bg-white rounded-[1.75rem] overflow-hidden shadow-[0_6px_24px_rgba(0,0,0,0.07)] hover:shadow-[0_20px_56px_rgba(212,175,55,0.16)] transition-all duration-500 hover:-translate-y-2 border border-black/4 flex flex-col h-full"
+                  className="group cursor-pointer bg-white rounded-none overflow-hidden shadow-[0_6px_24px_rgba(0,0,0,0.07)] hover:shadow-[0_20px_56px_rgba(212,175,55,0.16)] transition-all duration-500 hover:-translate-y-2 border border-black/4 flex flex-col h-full"
                 >
                   {/* Image */}
                   <div className="relative h-[200px] overflow-hidden shrink-0">
@@ -235,7 +235,7 @@ const FullCollection: React.FC<FullCollectionProps> = ({ onViewProperty }) => {
 
                     <button
                       onClick={() => onViewProperty?.(property.id)}
-                      className="w-full flex items-center justify-center gap-2 bg-black hover:gold-bg text-white hover:text-black py-3 rounded-xl text-[9px] font-black uppercase tracking-[0.25em] transition-all duration-300 hover:shadow-[0_10px_28px_rgba(212,175,55,0.3)] group/btn"
+                      className="w-full flex items-center justify-center gap-2 bg-black hover:gold-bg text-white hover:text-black py-3 rounded-none text-[9px] font-black uppercase tracking-[0.25em] transition-all duration-300 hover:shadow-[0_10px_28px_rgba(212,175,55,0.3)] group/btn"
                     >
                       View Residence
                       <ArrowRight size={11} className="transition-transform group-hover/btn:translate-x-1" />
@@ -250,7 +250,7 @@ const FullCollection: React.FC<FullCollectionProps> = ({ onViewProperty }) => {
 
       {/* Footer CTA Strip */}
       <div className="border-t border-black/6 py-16 bg-[#fafafa]">
-        <div className="section-container flex flex-col md:flex-row items-center justify-between gap-8">
+        <div className="section-container flex flex-col items-center text-center md:flex-row md:text-left justify-between gap-6 md:gap-8">
           <div className="flex flex-col gap-2">
             <span className="text-[10px] font-black uppercase tracking-[0.4em] text-black/30">{filtered.length} Residences Available</span>
             <p className="text-black/40 text-sm">Can't find what you're looking for? Our advisors have exclusive off-market listings.</p>
@@ -265,19 +265,7 @@ const FullCollection: React.FC<FullCollectionProps> = ({ onViewProperty }) => {
           </a>
         </div>
       </div>
-
-      {/* WhatsApp Button */}
-      <a
-        href="https://wa.me/971585589001"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="fixed bottom-8 left-8 z-50 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:bg-[#20b858] transition-transform hover:scale-110"
-      >
-        <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8">
-          <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.693c.961.533 1.83.693 2.778.694h.013c3.178 0 5.769-2.587 5.77-5.768.001-1.541-.601-2.986-1.688-4.073-1.089-1.09-2.535-1.693-4.082-1.811zm8.58 6.096c-.428-.214-2.536-1.249-2.929-1.393-.393-.143-.679-.214-.964.214-.286.429-1.107 1.393-1.357 1.679-.25.286-.5.321-.928.107-2.618-1.305-4.341-2.316-6.063-5.286-.214-.37.021-.571.229-.778.193-.193.429-.5.643-.75.214-.25.286-.429.429-.714.143-.286.071-.536-.036-.75-.107-.214-.964-2.321-1.321-3.179-.357-.839-.714-.714-.964-.714h-.821c-.286 0-.75.107-1.143.536-.393.429-1.5 1.464-1.5 3.571s1.536 4.143 1.75 4.428c.214.286 3.036 4.643 7.375 6.518 4.339 1.875 4.339 1.25 5.125 1.161.786-.089 2.536-1.036 2.911-2.036.375-1 .375-1.857.268-2.036-.107-.179-.393-.268-.821-.482zM12 2C6.486 2 2 6.486 2 12c0 1.84.514 3.553 1.408 5.03L2.01 22l5.056-1.32C8.619 21.6 10.284 22 12 22c5.514 0 10-4.486 10-10S17.514 2 12 2z" />
-        </svg>
-      </a >
-    </div >
+    </div>
   );
 };
 

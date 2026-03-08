@@ -3,6 +3,7 @@ import { Menu, X, Globe, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Logo from './Logo';
 import { useLanguage } from '../context/LanguageContext';
+import { useData } from '../context/DataContext';
 
 interface NavbarProps {
   onNavigate?: (page: string) => void;
@@ -19,8 +20,10 @@ const links = [
 
 const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
   const { t, language } = useLanguage();
+  const { isAuthenticated, logout } = useData();
   const [isScrolled, setIsScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 10);
@@ -50,7 +53,10 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
             paddingBottom: isScrolled ? 10 : 18,
           }}
         >
-          <div className="pointer-events-auto flex items-center justify-between rounded-full bg-black/40 backdrop-blur-2xl border border-white/10 px-4 sm:px-6 lg:px-8 shadow-[0_18px_45px_rgba(0,0,0,0.55)]">
+          <div className={`pointer-events-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 transition-all duration-500 rounded-none ${isScrolled
+            ? 'bg-black/80 backdrop-blur-xl border border-white/10 py-1.5 shadow-[0_20px_50px_rgba(0,0,0,0.3)]'
+            : 'bg-transparent py-2'
+            }`}>
             {/* Left: Logo */}
             <button
               onClick={() => handleNav('home')}
@@ -74,16 +80,14 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
                     className="relative py-3"
                   >
                     <span
-                      className={`transition-colors ${
-                        isActive ? 'text-[var(--gold)]' : 'text-white/80 hover:text-white'
-                      }`}
+                      className={`transition-colors ${isActive ? 'text-[var(--gold)]' : 'text-white/80 hover:text-white'
+                        }`}
                     >
                       {t(link.key as any)}
                     </span>
                     <span
-                      className={`absolute left-0 right-0 -bottom-1 mx-auto h-[2px] rounded-full bg-[var(--gold)] transition-transform origin-center ${
-                        isActive ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
-                      }`}
+                      className={`absolute left-0 right-0 -bottom-1 mx-auto h-[2px] rounded-full bg-[var(--gold)] transition-transform origin-center ${isActive ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
+                        }`}
                     />
                   </button>
                 );
@@ -97,12 +101,38 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
                 <span>{language}</span>
               </div>
 
-              <button
-                onClick={() => handleNav('login')}
-                className="hidden sm:inline-flex items-center justify-center w-9 h-9 rounded-full gold-bg text-white shadow-lg"
-              >
-                <User size={16} />
-              </button>
+              <div className="relative">
+                <button
+                  onClick={() => {
+                    if (isAuthenticated) setShowLogoutConfirm(!showLogoutConfirm);
+                    else handleNav('login');
+                  }}
+                  className={`hidden sm:inline-flex items-center justify-center w-9 h-9 rounded-full transition-all duration-300 ${isAuthenticated ? 'bg-white/10 text-[var(--gold)] border border-[var(--gold)]/30' : 'gold-bg text-white shadow-lg'}`}
+                >
+                  <User size={16} />
+                </button>
+
+                <AnimatePresence>
+                  {showLogoutConfirm && isAuthenticated && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      className="absolute right-0 mt-3 w-48 bg-[#0a0a0a] border border-white/10 rounded-2xl p-2 shadow-2xl backdrop-blur-xl z-50 overflow-hidden"
+                    >
+                      <button
+                        onClick={() => {
+                          logout();
+                          setShowLogoutConfirm(false);
+                        }}
+                        className="w-full flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-500/10 rounded-xl transition-colors text-[10px] font-black uppercase tracking-widest"
+                      >
+                        Logout Session
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
 
               {/* Mobile menu button */}
               <button
@@ -162,10 +192,17 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
               </div>
 
               <button
-                onClick={() => handleNav('login')}
-                className="mt-4 w-full rounded-full gold-bg text-black font-bold text-xs uppercase tracking-[0.25em] py-3"
+                onClick={() => {
+                  if (isAuthenticated) {
+                    logout();
+                    setOpen(false);
+                  } else {
+                    handleNav('login');
+                  }
+                }}
+                className={`mt-4 w-full rounded-full font-bold text-xs uppercase tracking-[0.25em] py-3 transition-colors ${isAuthenticated ? 'bg-red-500/10 text-red-500 border border-red-500/20' : 'gold-bg text-black'}`}
               >
-                Client Portal
+                {isAuthenticated ? 'Terminate Session' : 'Client Portal'}
               </button>
             </motion.div>
           </motion.div>

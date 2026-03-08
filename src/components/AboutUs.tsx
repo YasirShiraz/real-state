@@ -259,33 +259,7 @@ const AboutUs: React.FC = () => {
                         ))}
                     </div>
 
-                    <div className="mt-32 w-full">
-                        <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-8 leading-tight tracking-tighter uppercase text-center">
-                            Our <span className="italic font-serif font-light text-white/80">Values</span>
-                        </h2>
-                        <div className="w-16 h-[1px] bg-[var(--gold)] mx-auto mb-20" />
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                            {[
-                                { title: t('integrity'), icon: "⚖️", desc: "Honesty and directness in every transaction." },
-                                { title: t('innovation'), icon: "🚀", desc: "Leveraging high-velocity data for your advantage." },
-                                { title: t('collaboration'), icon: "🤝", desc: "A culture of partnership ensuring elite representation." },
-                                { title: t('transparency'), icon: "💎", desc: "Pure clarity in every listing and valuation." }
-                            ].map((value, i) => (
-                                <motion.div
-                                    key={i}
-                                    initial={{ opacity: 0, y: 30 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    viewport={{ once: true }}
-                                    transition={{ duration: 0.8, delay: i * 0.1 }}
-                                    className="group p-10 rounded-[3rem] bg-white/5 border border-white/10 hover:border-[var(--gold)]/30 transition-all duration-700 text-center"
-                                >
-                                    <div className="text-5xl mb-8 group-hover:scale-110 transition-transform duration-500">{value.icon}</div>
-                                    <h3 className="text-xl font-bold text-white uppercase tracking-widest mb-4">{value.title}</h3>
-                                    <p className="text-white/40 text-sm leading-relaxed">{value.desc}</p>
-                                </motion.div>
-                            ))}
-                        </div>
-                    </div>
+
                 </div>
             </section>
 
