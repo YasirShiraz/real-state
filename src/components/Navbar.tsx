@@ -162,10 +162,7 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
               transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
               className="absolute bottom-0 left-0 right-0 rounded-t-3xl bg-[#050505] border-t border-white/10 px-6 pt-6 pb-10 space-y-6"
             >
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-[10px] font-bold tracking-[0.4em] text-white/40 uppercase">
-                  Menu
-                </span>
+              <div className="relative flex items-center justify-end mb-4 h-9">
                 <button
                   onClick={() => setOpen(false)}
                   className="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center text-white/80"
@@ -182,9 +179,9 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.05 * index }}
-                    className="flex items-center justify-between py-3 border-b border-white/5 text-left"
+                    className="flex items-center justify-center py-3 border-b border-white/5 w-full text-center"
                   >
-                    <span className="text-white text-sm font-semibold tracking-[0.12em] uppercase">
+                    <span className="text-white text-sm font-semibold tracking-[0.12em] uppercase text-center">
                       {t(link.key as any)}
                     </span>
                   </motion.button>
