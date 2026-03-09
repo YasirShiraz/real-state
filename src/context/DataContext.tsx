@@ -125,7 +125,7 @@ const initialSiteContent: SiteContent = {
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = import.meta.env.PROD ? '/api' : 'http://localhost:5000/api';
 
 export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [properties, setProperties] = useState<Property[]>([]);

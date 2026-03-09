@@ -631,7 +631,8 @@ const Admin: React.FC = () => {
                                                         const fd = new FormData();
                                                         files.forEach(f => fd.append('images', f));
                                                         try {
-                                                            const res = await fetch('http://localhost:5000/api/upload', { method: 'POST', body: fd });
+                                                            const apiUrl = import.meta.env.PROD ? '/api/upload' : 'http://localhost:5000/api/upload';
+                                                            const res = await fetch(apiUrl, { method: 'POST', body: fd });
                                                             const data = await res.json();
                                                             if (data.urls?.length > 1) { data.urls.forEach((u: string) => addHeroSlide({ type: 'image', url: u })); setIsAdding(false); }
                                                             else if (data.urls?.[0]) setNewSlideUrl(data.urls[0]);
@@ -717,7 +718,8 @@ const Admin: React.FC = () => {
                                                             const fd = new FormData();
                                                             files.forEach(f => fd.append('images', f));
                                                             try {
-                                                                const res = await fetch('http://localhost:5000/api/upload', { method: 'POST', body: fd });
+                                                                const apiUrl = import.meta.env.PROD ? '/api/upload' : 'http://localhost:5000/api/upload';
+                                                                const res = await fetch(apiUrl, { method: 'POST', body: fd });
                                                                 const data = await res.json();
                                                                 if (data.urls) setFormData({ ...formData, images: [...formData.images, ...data.urls] });
                                                             } catch { alert('Upload failed.'); }
